@@ -4,8 +4,7 @@ import java.net.InetSocketAddress
 
 import akka.actor.ActorSystem
 import akka.stream.FlowMaterializer
-import akka.stream.scaladsl.{Sink, Source, StreamTcp, ForeachSink}
-import scala.concurrent.duration._
+import akka.stream.scaladsl.{StreamTcp, ForeachSink}
 import scala.language.postfixOps
 
 object TcpReceiver {
@@ -17,11 +16,7 @@ object TcpReceiver {
     val handler = ForeachSink[StreamTcp.IncomingConnection] { conn =>
       println("Client connected from: " + conn.remoteAddress)
 
-      val source = Source.apply(1 second, 1 second, () => new Ping).transform(() => new PingSerializer)
-
-      val sink = Sink.foreach(println)
-
-      source.via(conn.flow.transform(() => new PersonDeserializer)).runWith(sink)
+      new TcpReceiverEndpoint(system, conn)
     }
 
     val serverAddress = new InetSocketAddress("127.0.0.1", 6000)

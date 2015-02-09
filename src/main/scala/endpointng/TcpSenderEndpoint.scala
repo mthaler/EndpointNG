@@ -6,7 +6,7 @@ import akka.stream.scaladsl.{Source, Sink}
 import akka.stream.stage.Stage
 import akka.util.ByteString
 
-class TcpEndpoint(system: ActorSystem,connection: OutgoingConnection) extends AbstractEndpoint[Person, Ping](system) {
+class TcpSenderEndpoint(system: ActorSystem,connection: OutgoingConnection) extends AbstractEndpoint[Person, Ping](system) {
 
   override def serializer: Stage[Person, ByteString] = new PersonSerializer
 
